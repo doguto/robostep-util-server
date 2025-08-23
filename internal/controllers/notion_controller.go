@@ -24,11 +24,8 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	godotenv.Load()
 	webhookUrl := os.Getenv("DISCORD_WEBHOOK_URL")
 
-	// 生のJSONデータを取得してログ出力
-	rawData, _ := ctx.GetRawData()
-	fmt.Printf("Raw JSON Request: %s\n", string(rawData))
-	
 	// リクエストボディの取得
+	rawData, _ := ctx.GetRawData()
 	var payload notion_payload.NotifyNhkTaskPayload
 	err := json.Unmarshal(rawData, &payload)
 	if err != nil {
@@ -37,12 +34,6 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 		return
 	}
 
-	println(fmt.Sprintf("Request Body: %v", payload))
-
-	// デバッグ用ログ追加
-	fmt.Printf("TaskName: %+v\n", payload.Data.Properties.TaskName)
-	fmt.Printf("Properties: %+v\n", payload.Data.Properties)
-	
 	var taskName string
 	if len(payload.Data.Properties.TaskName.Title) > 0 {
 		taskName = payload.Data.Properties.TaskName.Title[0].PlainText
@@ -69,7 +60,7 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	} else {
 		limitDate = "（期日なし）"
 	}
-	
+
 	noticeBody := map[string]string{
 		"content": fmt.Sprintf(`=== === ===
 ### タスクリストが更新されました！
