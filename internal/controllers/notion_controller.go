@@ -33,12 +33,12 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	}
 
 	body, _ := io.ReadAll(ctx.Request.Body)
+	println(fmt.Sprintf("Request Body: %s", string(body)))
 
 	var taskName string
 	if len(payload.Properties.TaskName.Title) > 0 {
 		taskName = payload.Properties.TaskName.Title[0].PlainText
 	} else {
-		println(fmt.Sprintf("%v", payload.Properties.TaskName))
 		taskName = "（タスク名なし）"
 	}
 
