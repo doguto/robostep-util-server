@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	notion_payload "robostep-util-server/internal/payloads"
@@ -25,6 +24,7 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	godotenv.Load()
 	webhookUrl := os.Getenv("DISCORD_WEBHOOK_URL")
 
+	// リクエストボディの取得
 	var payload notion_payload.NotifyNhkTaskPayload
 	err := ctx.ShouldBindJSON(&payload)
 	if err != nil {
@@ -32,9 +32,12 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 		return
 	}
 
-	body, _ := io.ReadAll(ctx.Request.Body)
-	println(fmt.Sprintf("Request Body: %s", string(body)))
+	println(fmt.Sprintf("Request Body: %v", payload))
 
+	// デバッグ用ログ追加
+	fmt.Printf("TaskName: %+v\n", payload.Properties.TaskName)
+	fmt.Printf("Properties: %+v\n", payload.Properties)
+	
 	var taskName string
 	if len(payload.Properties.TaskName.Title) > 0 {
 		taskName = payload.Properties.TaskName.Title[0].PlainText
@@ -85,6 +88,6 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 
 	ctx.JSON(200, gin.H{
 		"message": "Task notification sent to Discord",
-		"payload": body,
+		"payload": payload,
 	})
 }
