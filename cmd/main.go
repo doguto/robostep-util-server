@@ -16,7 +16,7 @@ func main() {
 	{
 		notionGroup := apiGroup.Group("/notion")
 		{
-			notionGroup.GET("/notify_nhk_task", notionController.NotifyTaskToDiscord)
+			notionGroup.POST("/notify_nhk_task", notionController.NotifyTaskToDiscord)
 		}
 	}
 
