@@ -23,9 +23,11 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	godotenv.Load()
 	webhookUrl := os.Getenv("DISCORD_WEBHOOK_URL")
 
+	body, _ := io.ReadAll(ctx.Request.Body)
+
 	// Discordへ通知
 	payload := map[string]string{
-		"content": "Test",
+		"content": string(body),
 	}
 	jsonPayload, _ := json.Marshal(payload)
 
@@ -41,8 +43,6 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 		return
 	}
 	defer response.Body.Close()
-
-	body, _ := io.ReadAll(response.Body)
 
 	ctx.JSON(200, gin.H{
 		"message": "Task notification sent to Discord",
