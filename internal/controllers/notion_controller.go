@@ -24,10 +24,15 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	godotenv.Load()
 	webhookUrl := os.Getenv("DISCORD_WEBHOOK_URL")
 
+	// 生のJSONデータを取得してログ出力
+	rawData, _ := ctx.GetRawData()
+	fmt.Printf("Raw JSON Request: %s\n", string(rawData))
+	
 	// リクエストボディの取得
 	var payload notion_payload.NotifyNhkTaskPayload
-	err := ctx.ShouldBindJSON(&payload)
+	err := json.Unmarshal(rawData, &payload)
 	if err != nil {
+		fmt.Printf("JSON Unmarshal Error: %v\n", err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
 		return
 	}
