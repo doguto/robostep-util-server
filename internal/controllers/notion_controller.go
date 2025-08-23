@@ -66,11 +66,13 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 　　担当者：**%s**
 ステータス：**%s**
 　　　期日：**%s**
+	  URL：%s
 		`,
 		taskName,
 		assignees,
 		payload.Data.Properties.Status.Status.Name,
-		limitDate)
+		limitDate,
+		payload.Data.URL)
 
 	noticeBody := map[string]string{
 		"content": content,
