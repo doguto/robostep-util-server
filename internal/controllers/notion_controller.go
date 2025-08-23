@@ -34,6 +34,26 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 
 	body, _ := io.ReadAll(ctx.Request.Body)
 
+	var taskName string
+	if len(payload.Properties.TaskName.Title) > 0 {
+		taskName = payload.Properties.TaskName.Title[0].PlainText
+	} else {
+		println(fmt.Sprintf("%v", payload.Properties.TaskName))
+		taskName = "（タスク名なし）"
+	}
+
+	var assignees string
+	if len(payload.Properties.Assignees.People) > 0 {
+		for i, a := range payload.Properties.Assignees.People {
+			if i > 0 {
+				assignees += ", "
+			}
+			assignees += a.Name
+		}
+	} else {
+		assignees = "（担当者なし）"
+	}
+
 	// Discordへ通知
 	noticeBody := map[string]string{
 		"content": fmt.Sprintf(`=== === ===
@@ -43,8 +63,8 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 		ステータス：**%s**
 		　　　期日：**%s**
 		`,
-			payload.Properties.TaskName.Title[0].PlainText,
-			payload.Properties.Assignees.People[0].Name,
+			taskName,
+			assignees,
 			payload.Properties.Status.Status.Name,
 			payload.Properties.Limit.Date),
 	}
