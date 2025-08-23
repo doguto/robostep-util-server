@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 
-	notion_controller "robostep-util-server/internal/controllers/notion"
+	notion_controller "robostep-util-server/internal/controllers"
 )
 
 func main() {
