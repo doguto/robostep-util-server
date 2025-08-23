@@ -33,13 +33,13 @@ type NotifyNhkTaskPayload struct {
 			Type       string `json:"type"`
 			DatabaseId string `json:"database_id"`
 		} `json:"parent"`
-		Archived bool `json:"archived"`
-		InTrash  bool `json:"in_trash"`
+		Archived   bool             `json:"archived"`
+		InTrash    bool             `json:"in_trash"`
+		Properties DatabaseProperty `json:"properties"` // データベースプロパティをdata内に移動
+		URL        string           `json:"url"`
+		PublicUrl  string           `json:"public_url"`
 	} `json:"data"`
-	Properties DatabaseProperty `json:"properties"` // データベースプロパティをここに格納
-	URL        string           `json:"url"`
-	PublicUrl  string           `json:"public_url"`
-	RequestId  string           `json:"request_id"`
+	RequestId string `json:"request_id"`
 }
 
 // DatabaseProperty は Notion データベースの各プロパティを定義
@@ -80,9 +80,13 @@ type DatabaseProperty struct {
 	} `json:"工数レベル"`
 
 	Limit struct {
-		Id   string      `json:"id"`
-		Type string      `json:"type"`
-		Date interface{} `json:"date"` // TODO: 確認次第型を定義
+		Id   string `json:"id"`
+		Type string `json:"type"`
+		Date struct {
+			Start    string  `json:"start"`
+			End      *string `json:"end"`
+			TimeZone *string `json:"time_zone"`
+		} `json:"date"`
 	} `json:"期日"`
 
 	Assignees struct {

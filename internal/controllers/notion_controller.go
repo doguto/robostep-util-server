@@ -40,19 +40,19 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	println(fmt.Sprintf("Request Body: %v", payload))
 
 	// デバッグ用ログ追加
-	fmt.Printf("TaskName: %+v\n", payload.Properties.TaskName)
-	fmt.Printf("Properties: %+v\n", payload.Properties)
+	fmt.Printf("TaskName: %+v\n", payload.Data.Properties.TaskName)
+	fmt.Printf("Properties: %+v\n", payload.Data.Properties)
 	
 	var taskName string
-	if len(payload.Properties.TaskName.Title) > 0 {
-		taskName = payload.Properties.TaskName.Title[0].PlainText
+	if len(payload.Data.Properties.TaskName.Title) > 0 {
+		taskName = payload.Data.Properties.TaskName.Title[0].PlainText
 	} else {
 		taskName = "（タスク名なし）"
 	}
 
 	var assignees string
-	if len(payload.Properties.Assignees.People) > 0 {
-		for i, a := range payload.Properties.Assignees.People {
+	if len(payload.Data.Properties.Assignees.People) > 0 {
+		for i, a := range payload.Data.Properties.Assignees.People {
 			if i > 0 {
 				assignees += ", "
 			}
@@ -63,6 +63,13 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	}
 
 	// Discordへ通知
+	var limitDate string
+	if payload.Data.Properties.Limit.Date.Start != "" {
+		limitDate = payload.Data.Properties.Limit.Date.Start
+	} else {
+		limitDate = "（期日なし）"
+	}
+	
 	noticeBody := map[string]string{
 		"content": fmt.Sprintf(`=== === ===
 ### タスクリストが更新されました！
@@ -73,8 +80,8 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 		`,
 			taskName,
 			assignees,
-			payload.Properties.Status.Status.Name,
-			payload.Properties.Limit.Date),
+			payload.Data.Properties.Status.Status.Name,
+			limitDate),
 	}
 	jsonBody, _ := json.Marshal(noticeBody)
 
