@@ -14,12 +14,11 @@ func main() {
 	notionController := notion_controller.NewNotionController()
 
 	// API routing
+	engine.GET("/", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, "ok")
+	})
 	apiGroup := engine.Group("/api")
 	{
-		apiGroup.GET("/", func(ctx *gin.Context) {
-			ctx.String(http.StatusOK, "ok")
-		})
-
 		notionGroup := apiGroup.Group("/notion")
 		{
 			notionGroup.POST("/notify_nhk_task", notionController.NotifyTaskToDiscord)
