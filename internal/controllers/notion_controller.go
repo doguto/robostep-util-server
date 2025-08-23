@@ -61,18 +61,19 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 		limitDate = "（期日なし）"
 	}
 
-	noticeBody := map[string]string{
-		"content": fmt.Sprintf(`=== === ===
-### タスクリストが更新されました！
+	content := fmt.Sprintf(`### タスクリストが更新されました！
 　タスク名：**%s**
 　　担当者：**%s**
 ステータス：**%s**
 　　　期日：**%s**
 		`,
-			taskName,
-			assignees,
-			payload.Data.Properties.Status.Status.Name,
-			limitDate),
+		taskName,
+		assignees,
+		payload.Data.Properties.Status.Status.Name,
+		limitDate)
+
+	noticeBody := map[string]string{
+		"content": content,
 	}
 	jsonBody, _ := json.Marshal(noticeBody)
 
