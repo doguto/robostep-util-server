@@ -3,6 +3,7 @@ package notion_controller
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"net/http"
 	"os"
 
@@ -41,7 +42,10 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	}
 	defer response.Body.Close()
 
+	body, _ := io.ReadAll(response.Body)
+
 	ctx.JSON(200, gin.H{
 		"message": "Task notification sent to Discord",
+		"payload": body,
 	})
 }
