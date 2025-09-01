@@ -64,7 +64,7 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	content := fmt.Sprintf(`### タスクリストが更新されました！
 　タスク名：**%s**
 　　担当者：**%s**
-ステータス：**%s**
+ステータス：`+"`%s`"+`
 　　　期日：**%s**
 	  URL：%s
 		`,
