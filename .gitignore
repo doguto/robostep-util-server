@@ -1,6 +1,2 @@
 .env
-robostep-util-server
-*.exe
-*.out
-dist/
 build/
