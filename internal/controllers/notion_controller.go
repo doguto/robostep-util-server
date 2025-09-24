@@ -75,37 +75,39 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 
 	noticeBody := map[string]string{
 		"embeds": [
-			"title": "タスクリストが更新されました！",
-			"url": payload.Data.URL,
-			"fields": [
-				{
-					"name": "タスク名",
-					"value": taskName,
-					"inline": false,
-				},
-				{
-					"name": "期日",
-					"value": limitDate,
-					"inline": false
-				},
-				{
-					"name": "担当者",
-					"value": assignees,
-					"inline": false,
-				},
-				{
-					"name": "ステータス",
-					"value": status,
-					"inline": true,
-				},
-				{
-					"name": "タスクの種類",
-					"value": taskKind,
-					"inline": true
-				},
-			],
-			"color": 5763719, // Green
-			"allowed_mentions": true,
+			{
+				"title": "タスクリストが更新されました！",
+				"url": payload.Data.URL,
+				"fields": [
+					{
+						"name": "タスク名",
+						"value": taskName,
+						"inline": false,
+					},
+					{
+						"name": "期日",
+						"value": limitDate,
+						"inline": false,
+					},
+					{
+						"name": "担当者",
+						"value": assignees,
+						"inline": false,
+					},
+					{
+						"name": "ステータス",
+						"value": status,
+						"inline": true,
+					},
+					{
+						"name": "タスクの種類",
+						"value": taskKind,
+						"inline": true
+					},
+				],
+				"color": 5763719, // Green
+				"allowed_mentions": true,
+			},
 		],
 	}
 	jsonBody, _ := json.Marshal(noticeBody)
