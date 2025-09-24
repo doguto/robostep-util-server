@@ -74,6 +74,7 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 	}
 
 	noticeBody := map[string]interface{}{
+		"allowed_mentions": true,
 		"embeds": []map[string]interface{}{
 			{
 				"title": "タスクリストが更新されました！",
@@ -105,8 +106,7 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 						"inline": true,
 					},
 				},
-				"color":            5763719, // Green
-				"allowed_mentions": true,
+				"color": 5763719, // Green
 			},
 		},
 	}
