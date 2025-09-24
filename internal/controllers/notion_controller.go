@@ -61,21 +61,52 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 		limitDate = "（期日なし）"
 	}
 
-	content := fmt.Sprintf(`### タスクリストが更新されました！
-　タスク名：**%s**
-　　担当者：**%s**
-ステータス：`+"`%s`"+`
-　　　期日：**%s**
-	  URL：%s
-		`,
-		taskName,
-		assignees,
-		payload.Data.Properties.Status.Status.Name,
-		limitDate,
-		payload.Data.URL)
+	var status = payload.Data.Properties.Status.Status.Name
+
+	var taskKinds = payload.Data.Properties.TaskKind.MultiSelect
+	var taskKind = ""
+	for index, multiSelect := range taskKinds {
+		var taskKindName = multiSelect.Name
+		if (index != 0) {
+			taskKind += ", "
+		}
+		taskKind += taskKindName
+	}
 
 	noticeBody := map[string]string{
-		"content": content,
+		"embeds": [
+			"title": "タスクリストが更新されました！",
+			"url": payload.Data.URL,
+			"fields": [
+				{
+					"name": "タスク名",
+					"value": taskName,
+					"inline": false,
+				},
+				{
+					"name": "期日",
+					"value": limitDate,
+					"inline": false
+				},
+				{
+					"name": "担当者",
+					"value": assignees,
+					"inline": false,
+				},
+				{
+					"name": "ステータス",
+					"value": status,
+					"inline": true,
+				},
+				{
+					"name": "タスクの種類",
+					"value": taskKind,
+					"inline": true
+				},
+			],
+			"color": 5763719, // Green
+			"allowed_mentions": true,
+		],
 	}
 	jsonBody, _ := json.Marshal(noticeBody)
 
