@@ -73,44 +73,43 @@ func (c *NotionController) NotifyTaskToDiscord(ctx *gin.Context) {
 		taskKind += taskKindName
 	}
 
-	noticeBody := map[string]interface{}{
-		"allowed_mentions": true,
-		"embeds": []map[string]interface{}{
-			{
-				"title": "タスクリストが更新されました！",
-				"url":   payload.Data.URL,
-				"fields": []map[string]interface{}{
-					{
-						"name":   "タスク名",
-						"value":  taskName,
-						"inline": false,
-					},
-					{
-						"name":   "期日",
-						"value":  limitDate,
-						"inline": false,
-					},
-					{
-						"name":   "担当者",
-						"value":  assignees,
-						"inline": false,
-					},
-					{
-						"name":   "ステータス",
-						"value":  status,
-						"inline": true,
-					},
-					{
-						"name":   "タスクの種類",
-						"value":  taskKind,
-						"inline": true,
-					},
+	var discordWebhookObject DiscordWebhookObject
+	discordWebhookObject.Embeds = []Embed{
+		{
+			Title: "タスクリストが更新されました！",
+			URL:   payload.Data.URL,
+			Fields: []Field{
+				{
+					Name:   "タスク名",
+					Value:  taskName,
+					Inline: false,
 				},
-				"color": 5763719, // Green
+				{
+					Name:   "期日",
+					Value:  limitDate,
+					Inline: false,
+				},
+				{
+					Name:   "担当者",
+					Value:  assignees,
+					Inline: false,
+				},
+				{
+					Name:   "ステータス",
+					Value:  status,
+					Inline: true,
+				},
+				{
+					Name:   "タスクの種類",
+					Value:  taskKind,
+					Inline: true,
+				},
 			},
+			Color: 5763719, // Green
 		},
 	}
-	jsonBody, _ := json.Marshal(noticeBody)
+
+	jsonBody, _ := json.Marshal(discordWebhookObject)
 
 	response, error := http.Post(
 		webhookUrl,
